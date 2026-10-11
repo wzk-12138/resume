@@ -2,7 +2,7 @@
 
 > 上海杉达学院 · 计算机科学与技术 · 个人主页 / 简历站点
 
-🌐 **线上访问（根域名）**：[https://wzk-12138.github.io/](https://wzk-12138.github.io/)
+🌐 **线上访问**：[https://wzk-12138.github.io/resume/](https://wzk-12138.github.io/resume/)
 
 ## 项目简介
 
@@ -13,12 +13,12 @@
 - **简洁单页布局**：纯白底 + 单一蓝色主色 + 细分割线，自适应手机与桌面
 - **核心信息一览**：个人照片、专业、学校、兴趣标签、联系方式
 - **Works 作品区**：精选独立项目（AI 聊天助手、网站自动部署全览、游戏攻略站）
-- **GitHub 项目自动同步**：页面加载时调用 GitHub API 实时拉取账号下的公开仓库，**新建仓库后刷新页面即自动出现**（本仓库 `wzk-12138.github.io` 自身已自动排除，不重复展示）
+- **GitHub 项目自动同步**：页面加载时调用 GitHub API 实时拉取账号下的公开仓库，**新建仓库后刷新页面即自动出现**（本仓库 `resume` 自身已自动排除，不重复展示）
 
 ## 目录结构
 
 ```
-wzk-12138.github.io/
+resume/
 ├── index.html        # 简历主页面（GitHub Pages 入口）
 ├── assets/
 │   └── photo.jpg      # 个人照片
@@ -37,8 +37,8 @@ wzk-12138.github.io/
 1. 克隆仓库：
 
    ```bash
-   git clone https://github.com/wzk-12138/wzk-12138.github.io.git
-   cd wzk-12138.github.io
+   git clone https://github.com/wzk-12138/resume.git
+   cd resume
    ```
 
 2. 用浏览器直接打开 `index.html` 即可（联网时 GitHub 项目区会实时同步）。
