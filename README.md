@@ -38,7 +38,7 @@ wzk-12138.github.io/
 
    ```bash
    git clone https://github.com/wzk-12138/wzk-12138.github.io.git
-   cd resume
+   cd wzk-12138.github.io
    ```
 
 2. 用浏览器直接打开 `index.html` 即可（联网时 GitHub 项目区会实时同步）。
