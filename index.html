@@ -82,29 +82,6 @@
     background: #f7f7f5; color: #46453f; font-weight: 400;
   }
 
-  /* 技能 */
-  .skills .row { align-items: flex-start; }
-  .skills .row .k { padding-top: 7px; }
-  .skills .tags { gap: 8px; }
-  .skills .tags span { font-size: 13px; padding: 5px 13px; }
-
-  /* 课程实践 */
-  .more {
-    display: block; position: relative;
-    margin: 0 -16px; padding: 18px 16px; border-top: 1px solid var(--line);
-    border-radius: 12px; transition: background .2s;
-  }
-  .more:first-of-type { border-top: none; }
-  .more:hover { background: #ffffff; }
-  .more-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
-  .more-name { font-size: 15px; font-weight: 500; transition: color .2s; }
-  .more:hover .more-name { color: var(--accent); }
-  .more-tag {
-    flex: none; font-size: 11px; color: var(--faint);
-    border: 1px solid var(--line); border-radius: 999px; padding: 2px 9px; letter-spacing: .5px;
-  }
-  .more p { margin-top: 4px; color: var(--soft); font-size: 13.5px; font-weight: 300; }
-
   /* 同步说明 */
   .sync { font-size: 12.5px; color: var(--faint); margin-bottom: 24px; letter-spacing: .5px; }
 
@@ -217,24 +194,6 @@
   </section>
 
   <section>
-    <div class="label">Skills</div>
-    <div class="rows skills">
-      <div class="row">
-        <div class="k">系统与算子</div>
-        <div class="v"><div class="tags"><span>Ascend C</span><span>CANN</span><span>HarmonyOS</span><span>ArkTS</span></div></div>
-      </div>
-      <div class="row">
-        <div class="k">智能体与大模型</div>
-        <div class="v"><div class="tags"><span>Python</span><span>Streamlit</span><span>OpenAI / Anthropic / Ollama 接口</span><span>RAG</span><span>工具调用</span></div></div>
-      </div>
-      <div class="row">
-        <div class="k">前端与工程</div>
-        <div class="v"><div class="tags"><span>HTML / CSS</span><span>JavaScript</span><span>Git</span><span>GitHub Pages</span></div></div>
-      </div>
-    </div>
-  </section>
-
-  <section>
     <div class="label">Interests</div>
     <div class="tags">
       <span>🏃 热爱运动</span>
@@ -247,23 +206,6 @@
   <section id="works-section">
     <div class="label">Works</div>
     <div class="works" id="featured"></div>
-  </section>
-
-  <section>
-    <div class="label">Coursework</div>
-    <p class="sync">课程与实践项目 · 托管于 AtomGit（Lumos_1）</p>
-    <a class="more" href="https://gitcode.com/Lumos_1/bailian-agent" target="_blank" rel="noopener">
-      <div class="more-head"><span class="more-name">百炼智能体 + 本地调用</span><span class="more-tag">AtomGit</span></div>
-      <p>Streamlit 网页调用阿里云百炼 Managed Agent：agentstudio SSE 流式输出，思考过程与工具调用可见；另附约 20 行的最小智能体示例（本地 Ollama + 命令识别 + HTTP 接口），演示智能体的本质循环。</p>
-    </a>
-    <a class="more" href="https://gitcode.com/Lumos_1/local-llm-deploy" target="_blank" rel="noopener">
-      <div class="more-head"><span class="more-name">本地模型对外部署开放 · 实验报告</span><span class="more-tag">AtomGit</span></div>
-      <p>Ollama + Qwen3.5 的四种调用协议对比（Ollama / OpenAI Chat / OpenAI Responses / Anthropic Messages）、HTTP 对外服务与网页聊天、工具调用与 RAG 外挂的完整实测。</p>
-    </a>
-    <a class="more" href="https://gitcode.com/Lumos_1/local-model-service" target="_blank" rel="noopener">
-      <div class="more-head"><span class="more-name">本地模型下载调用与对外服务</span><span class="more-tag">AtomGit</span></div>
-      <p>把一份本地大模型做成「能下载、能调用、能对外服务、能加外挂」的最小可运行示例：四套调用接口对照、工具与检索外挂、零第三方依赖的对外 HTTP 服务。</p>
-    </a>
   </section>
 
   <section>
