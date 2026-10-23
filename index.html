@@ -204,7 +204,6 @@
 
   <section id="works-section">
     <div class="label">Works</div>
-    <p class="sync" id="featured-note">正在从 GitHub 选取代表性作品…</p>
     <div class="works" id="featured"></div>
   </section>
 
@@ -230,6 +229,7 @@
 const GH_USER = "wzk-12138";
 const FEATURED_COUNT = 3;   // 精选作品数量
 const EXCLUDE = ["batchmatmulmaxsum"];   // 手动排除：这些仓库不出现在简历页任何区块
+const FEATURED_EXCLUDE = ["deploy-guide"];   // 不进精选作品（仍会出现在下方项目列表）
 const LANG = {JavaScript:"#f1e05a",TypeScript:"#3178c6",Python:"#3572A5",Java:"#b07219",
   "C":"#555","C++":"#f34b7d","C#":"#178600",Go:"#00ADD8",Rust:"#dea584",
   HTML:"#e34c26",CSS:"#563d7c",Vue:"#41b883",Shell:"#89e051",PHP:"#4F5D95"};
@@ -281,6 +281,7 @@ function cardDesc(r) {
 // 选 n 个代表性作品：按分排序，同语言只取一个（保证覆盖面），不足再按分补齐
 function pickFeatured(repos, n) {
   const scored = myRepos(repos)
+    .filter(r => FEATURED_EXCLUDE.indexOf(r.name) === -1)
     .map(r => ({ r: r, s: featuredScore(r) }))
     .sort((a, b) => b.s - a.s);
   const picked = [];
@@ -301,7 +302,6 @@ function pickFeatured(repos, n) {
 
 function renderFeatured(repos, live) {
   const section = document.getElementById("works-section");
-  const note = document.getElementById("featured-note");
   const box = document.getElementById("featured");
   const picked = live ? pickFeatured(repos, FEATURED_COUNT) : [];
   if (!picked.length) { section.style.display = "none"; return; }
@@ -315,7 +315,6 @@ function renderFeatured(repos, live) {
         <span>更新于 ${new Date(r.updated_at).toLocaleDateString("zh-CN")}</span>
       </div>
     </a>`).join("");
-  note.textContent = "已自动选取 " + picked.length + " 个代表性作品 · 每次打开都会按最新仓库重新评选";
 }
 
 function renderProjects(repos, live) {
