@@ -10,10 +10,8 @@
 | --- | --- |
 | 头部 | 头像、姓名、学校与专业、GitHub 链接、一句自我介绍 |
 | About | 专业、学校、年级、兴趣 |
-| Skills | 按方向分组的技能标签：系统与算子 / 智能体与大模型 / 前端与工程 |
 | Interests | 运动 / 魔方 / 编程 / 计算机科学标签 |
 | Works | 精选作品：每次打开页面时从 GitHub 仓库自动评选 3 个代表性项目 |
-| Coursework | 课程与实践项目（托管于 AtomGit，手写维护，共 3 个） |
 | GitHub Projects | 实时同步的 GitHub 公开仓库列表 |
 | Contact | GitHub 与邮箱 |
 
