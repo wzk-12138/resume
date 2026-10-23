@@ -59,8 +59,35 @@
     border-radius: 999px; color: #333;
   }
 
-  /* GitHub 项目 */
+  /* 同步说明 */
   .sync { font-size: 13px; color: var(--soft); margin-bottom: 20px; }
+
+  /* 精选作品（自动评选） */
+  .works { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .work {
+    display: flex; flex-direction: column; gap: 10px;
+    padding: 20px 18px; border: 1px solid var(--line); border-radius: 14px;
+    background: #fff; transition: transform .2s, border-color .2s, box-shadow .2s;
+  }
+  .work:hover {
+    transform: translateY(-3px); border-color: var(--accent);
+    box-shadow: 0 8px 20px rgba(26, 95, 180, .08);
+  }
+  .work .w-tag {
+    width: fit-content; font-size: 12px; padding: 3px 10px; border-radius: 999px;
+    background: #eef3fb; color: var(--accent);
+  }
+  .work h3 { font-size: 16px; font-weight: 500; line-height: 1.45; }
+  .work p {
+    color: var(--soft); font-size: 13.5px; line-height: 1.65;
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .work .w-meta {
+    margin-top: auto; padding-top: 4px; font-size: 12px; color: #999;
+    display: flex; gap: 12px; flex-wrap: wrap;
+  }
+
+  /* GitHub 项目 */
   .repo {
     display: block; padding: 16px 0; border-top: 1px solid var(--line);
   }
@@ -68,7 +95,7 @@
   .repo .name { font-size: 15.5px; font-weight: 500; color: var(--accent); }
   .repo .name:hover { text-decoration: underline; }
   .repo .desc { color: var(--soft); font-size: 14px; margin: 4px 0 6px; }
-  .repo .meta { font-size: 12.5px; color: #999; display: flex; gap: 16px; }
+  .repo .meta { font-size: 12.5px; color: #999; display: flex; gap: 16px; flex-wrap: wrap; }
   .repo .lang { display: inline-flex; align-items: center; gap: 5px; }
   .lang-dot { width: 9px; height: 9px; border-radius: 50%; background: #999; display: inline-block; }
   .empty { color: var(--soft); font-size: 14px; }
@@ -80,6 +107,7 @@
     .profile { flex-direction: column; align-items: flex-start; gap: 16px; }
     .row { flex-direction: column; gap: 2px; }
     .row .k { width: auto; }
+    .works { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -118,23 +146,10 @@
     </div>
   </section>
 
-  <section>
+  <section id="works-section">
     <div class="label">Works</div>
-    <a class="repo" href="https://wzk-12138.github.io/ai-chat/" target="_blank" rel="noopener">
-      <div class="name">AI 聊天助手</div>
-      <div class="desc">纯静态的在线对话页面，支持流式输出与多轮上下文记忆，打开即用。</div>
-      <div class="meta"><span>HTML / JavaScript</span><span>独立项目</span></div>
-    </a>
-    <a class="repo" href="https://wzk-12138.github.io/deploy-guide/" target="_blank" rel="noopener">
-      <div class="name">网站与应用自动部署方式全览</div>
-      <div class="desc">梳理自动部署的四步链路、三条路线、平台横向对比与四种触发方式。</div>
-      <div class="meta"><span>HTML / CSS</span><span>独立项目</span></div>
-    </a>
-    <a class="repo" href="https://wzk-12138.github.io/game-guide/" target="_blank" rel="noopener">
-      <div class="name">破局指南 · 游戏攻略站</div>
-      <div class="desc">暗色主题的内容聚合页面，采用网格化排版与高对比配色。</div>
-      <div class="meta"><span>HTML / CSS</span><span>独立项目</span></div>
-    </a>
+    <p class="sync" id="featured-note">正在从 GitHub 选取代表性作品…</p>
+    <div class="works" id="featured"></div>
   </section>
 
   <section>
@@ -157,6 +172,7 @@
 
 <script>
 const GH_USER = "wzk-12138";
+const FEATURED_COUNT = 3;   // 精选作品数量
 const LANG = {JavaScript:"#f1e05a",TypeScript:"#3178c6",Python:"#3572A5",Java:"#b07219",
   "C":"#555","C++":"#f34b7d","C#":"#178600",Go:"#00ADD8",Rust:"#dea584",
   HTML:"#e34c26",CSS:"#563d7c",Vue:"#41b883",Shell:"#89e051",PHP:"#4F5D95"};
@@ -167,18 +183,85 @@ const sync = document.getElementById("sync");
 // 本地兜底数据：实时拉取失败时使用，保证页面始终有内容
 const FALLBACK = [];
 
-function render(repos, live) {
+function escapeHtml(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+// 自己的项目：排除 fork 与简历仓库自身
+function myRepos(repos) {
+  return repos.filter(r => !r.fork && r.name !== "resume");
+}
+
+// 代表性评分：有介绍 +3、有主语言 +1、越新越高（约半年衰减完）、star/fork 加分
+function featuredScore(r) {
+  let s = 0;
+  if (r.description) s += 3;
+  if (r.language) s += 1;
+  const days = (Date.now() - new Date(r.updated_at).getTime()) / 86400000;
+  s += Math.max(0, 3 - days / 120);
+  s += Math.min(r.stargazers_count || 0, 5);
+  s += Math.min(r.forks_count || 0, 3);
+  return s;
+}
+
+// 从描述开头截一个短标题（不超过 14 字），截不到就用仓库名
+function shortTitle(r) {
+  const head = (r.description || "").split(/[，。、；：｜|·—]|\s-\s/)[0].trim();
+  return head && head.length <= 14 ? head : r.name;
+}
+
+// 选 n 个代表性作品：按分排序，同语言只取一个（保证覆盖面），不足再按分补齐
+function pickFeatured(repos, n) {
+  const scored = myRepos(repos)
+    .map(r => ({ r: r, s: featuredScore(r) }))
+    .sort((a, b) => b.s - a.s);
+  const picked = [];
+  const usedLang = new Set();
+  for (const item of scored) {
+    if (picked.length >= n) break;
+    const r = item.r;
+    if (r.language && usedLang.has(r.language)) continue;
+    picked.push(r);
+    if (r.language) usedLang.add(r.language);
+  }
+  for (const item of scored) {
+    if (picked.length >= n) break;
+    if (picked.indexOf(item.r) === -1) picked.push(item.r);
+  }
+  return picked;
+}
+
+function renderFeatured(repos, live) {
+  const section = document.getElementById("works-section");
+  const note = document.getElementById("featured-note");
+  const box = document.getElementById("featured");
+  const picked = live ? pickFeatured(repos, FEATURED_COUNT) : [];
+  if (!picked.length) { section.style.display = "none"; return; }
+  box.innerHTML = picked.map(r => `
+    <a class="work" href="${r.html_url}" target="_blank" rel="noopener">
+      <span class="w-tag">${escapeHtml(r.language || "Project")}</span>
+      <h3>${escapeHtml(shortTitle(r))}</h3>
+      <p>${escapeHtml(r.description || "（暂无描述）")}</p>
+      <div class="w-meta">
+        ${r.stargazers_count ? `<span>★ ${r.stargazers_count}</span>` : ""}
+        <span>更新于 ${new Date(r.updated_at).toLocaleDateString("zh-CN")}</span>
+      </div>
+    </a>`).join("");
+  note.textContent = "已自动选取 " + picked.length + " 个代表性作品 · 每次打开都会按最新仓库重新评选";
+}
+
+function renderProjects(repos, live) {
   // 简历仓库自身不作为作品项目列出
-  const mine = repos.filter(r => !r.fork && r.name !== "resume");
+  const mine = myRepos(repos);
   if (!mine.length) {
     repoBox.innerHTML = '<div class="empty">暂无公开仓库，去 GitHub 创建第一个项目吧。</div>';
   } else {
     repoBox.innerHTML = mine.map(r => `
         <a class="repo" href="${r.html_url}" target="_blank" rel="noopener">
-          <div class="name">${r.name}</div>
-          <div class="desc">${r.description || "（暂无描述）"}</div>
+          <div class="name">${escapeHtml(r.name)}</div>
+          <div class="desc">${escapeHtml(r.description || "（暂无描述）")}</div>
           <div class="meta">
-            ${r.language ? `<span class="lang"><span class="lang-dot" style="background:${LANG[r.language]||"#999"}"></span>${r.language}</span>` : ""}
+            ${r.language ? `<span class="lang"><span class="lang-dot" style="background:${LANG[r.language]||"#999"}"></span>${escapeHtml(r.language)}</span>` : ""}
             <span>★ ${r.stargazers_count}</span>
             <span>⑂ ${r.forks_count}</span>
             <span>更新于 ${new Date(r.updated_at).toLocaleDateString("zh-CN")}</span>
@@ -192,8 +275,8 @@ function render(repos, live) {
 
 fetch(`https://api.github.com/users/${GH_USER}/repos?sort=updated&per_page=50`)
   .then(r => { if (!r.ok) throw 0; return r.json(); })
-  .then(repos => render(repos, true))
-  .catch(() => render(FALLBACK, false));
+  .then(repos => { renderFeatured(repos, true); renderProjects(repos, true); })
+  .catch(() => { renderFeatured(FALLBACK, false); renderProjects(FALLBACK, false); });
 </script>
 </body>
 </html>
