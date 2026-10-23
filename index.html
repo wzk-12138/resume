@@ -173,6 +173,7 @@
 <script>
 const GH_USER = "wzk-12138";
 const FEATURED_COUNT = 3;   // 精选作品数量
+const EXCLUDE = ["batchmatmulmaxsum"];   // 手动排除：这些仓库不出现在简历页任何区块
 const LANG = {JavaScript:"#f1e05a",TypeScript:"#3178c6",Python:"#3572A5",Java:"#b07219",
   "C":"#555","C++":"#f34b7d","C#":"#178600",Go:"#00ADD8",Rust:"#dea584",
   HTML:"#e34c26",CSS:"#563d7c",Vue:"#41b883",Shell:"#89e051",PHP:"#4F5D95"};
@@ -187,9 +188,9 @@ function escapeHtml(s) {
   return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
-// 自己的项目：排除 fork 与简历仓库自身
+// 自己的项目：排除 fork、简历仓库自身与手动排除的仓库
 function myRepos(repos) {
-  return repos.filter(r => !r.fork && r.name !== "resume");
+  return repos.filter(r => !r.fork && r.name !== "resume" && EXCLUDE.indexOf(r.name) === -1);
 }
 
 // 代表性评分：有介绍 +3、有主语言 +1、越新越高（约半年衰减完）、star/fork 加分
