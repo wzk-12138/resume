@@ -308,8 +308,8 @@
 <script>
 const GH_USER = "wzk-12138";
 const FEATURED_COUNT = 3;   // 精选作品数量
-const EXCLUDE = [];   // 手动排除：填仓库名后该仓库不出现在简历页任何区块
-const FEATURED_EXCLUDE = ["resume", "batchmatmulmaxsum", "deploy-guide"];   // 不进精选作品（仍会出现在下方项目列表）
+const EXCLUDE = ["resume"];   // 手动排除：这些仓库不出现在简历页任何区块（resume 是简历仓库自身）
+const FEATURED_EXCLUDE = ["batchmatmulmaxsum", "deploy-guide"];   // 不进精选作品（仍会出现在下方项目列表）
 const LANG = {JavaScript:"#f1e05a",TypeScript:"#3178c6",Python:"#3572A5",Java:"#b07219",
   "C":"#555","C++":"#f34b7d","C#":"#178600",Go:"#00ADD8","Rust":"#dea584",
   HTML:"#e34c26",CSS:"#563d7c","Vue":"#41b883",Shell:"#89e051",PHP:"#4F5D95"};
